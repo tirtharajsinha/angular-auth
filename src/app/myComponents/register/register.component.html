@@ -1,0 +1,30 @@
+<div class="formbox">
+    <form class="form" [formGroup]="form" (submit)="submit()">
+
+        <div class="input-group mb-3">
+            <span class="input-group-text" id="basic-addon1">&#36;</span>
+            <input type="text" class="form-control" placeholder="Username" aria-label="Username" formControlName="name"
+                required>
+        </div>
+
+        <div class="input-group mb-3">
+            <span class="input-group-text" id="basic-addon1">&#64;</span>
+            <input type="email" class="form-control" placeholder="Email" aria-label="email" formControlName="email"
+                required>
+        </div>
+
+        <div class="input-group mb-3">
+            <span class="input-group-text" id="basic-addon1">&#35;</span>
+            <input type="password" class="form-control" placeholder="Password" aria-label="Username"
+                formControlName="password" required>
+        </div>
+
+        <button type="submit" class="btn btn-primary w-100" [disabled]="!form.valid">REGISTER</button>
+
+        <p class="text-info">
+            @if(api_response){
+            {{api_response | json}}
+            }
+        </p>
+    </form>
+</div>

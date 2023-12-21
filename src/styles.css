@@ -1,1 +1,13 @@
 /* You can add global styles to this file, and also import other style files */
+.formbox {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 100vh;
+}
+
+.form {
+  width: 95%;
+  max-width: 500px;
+}

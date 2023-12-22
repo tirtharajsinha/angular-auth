@@ -2,9 +2,7 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { UserService } from '../../user.service';
 import { UserObject } from '../../user-object';
-import { HttpClient } from '@angular/common/http';
 import { Emitters } from '../emitters/emitters';
-import { SessionService } from '../../session.service';
 import { HttpService } from '../../http.service';
 
 @Component({

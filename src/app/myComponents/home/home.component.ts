@@ -1,4 +1,3 @@
-import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { UserService } from '../../user.service';
 import { UserObject } from '../../user-object';
@@ -16,7 +15,7 @@ export class HomeComponent {
   user: UserObject;
 
 
-  constructor(private http: HttpClient, private userService: UserService, private session: SessionService) {
+  constructor(private userService: UserService, private session: SessionService) {
     this.loadUser();
   }
 

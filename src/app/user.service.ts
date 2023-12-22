@@ -1,4 +1,3 @@
-import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { UserObject } from './user-object';
 import { Emitters } from './myComponents/emitters/emitters';

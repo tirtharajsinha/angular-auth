@@ -1,7 +1,7 @@
-import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { HttpService } from '../../http.service';
 
 @Component({
   selector: 'app-register',
@@ -16,28 +16,51 @@ export class RegisterComponent implements OnInit {
 
 
 
-  constructor(private formBuilder: FormBuilder, private http: HttpClient, private router: Router) { }
+  constructor(private formBuilder: FormBuilder, private httpservice: HttpService, private router: Router) { }
 
   ngOnInit(): void {
     this.form = this.formBuilder.group({
-      name: ["", Validators.required, Validators.email],
-      email: ["", Validators.required],
-      password: ["", Validators.required]
+      name: ["", {
+        validators: [
+          Validators.required
+        ]
+      }],
+      email: ["", {
+        validators: [
+          Validators.required,
+          Validators.email
+        ]
+      }],
+      password: ["", {
+        validators: [
+          Validators.required
+        ]
+      }]
     });
   }
 
   submit(): void {
-    this.http.post(this.URL, this.form.getRawValue()).subscribe(
-      data => {
-        console.log('success', data);
-        this.api_response = "Sucessfully registered"
-        this.router.navigate(["/login"]);
-      },
-      error => {
-        console.log('oops', error);
-        this.api_response = "Error Occured"
-      }
-    )
+    this.registerCallback = this.registerCallback.bind(this);
+    this.registerErrorCallback = this.registerErrorCallback.bind(this);
+    this.httpservice.register(this.form, this.registerCallback, this.registerErrorCallback)
+  }
+
+
+  registerCallback(data) {
+    console.log('success', data);
+    this.api_response = "Sucessfully registered"
+    this.router.navigate(["/login"]);
+  }
+
+  registerErrorCallback(error) {
+    console.log('oops', error);
+    if (error.error && error.error.email) {
+      this.api_response = error.error.email;
+    }
+    else {
+      this.api_response = "Error Occured";
+    }
+
   }
 
 }

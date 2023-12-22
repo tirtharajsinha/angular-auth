@@ -5,6 +5,7 @@ import { UserObject } from '../../user-object';
 import { HttpClient } from '@angular/common/http';
 import { Emitters } from '../emitters/emitters';
 import { SessionService } from '../../session.service';
+import { HttpService } from '../../http.service';
 
 @Component({
   selector: 'app-nevbar',
@@ -14,15 +15,14 @@ import { SessionService } from '../../session.service';
 export class NevbarComponent {
 
   user: UserObject;
-  URL: string = "http://localhost:8000/api/logout";
 
-  constructor(private http: HttpClient, private userService: UserService, private session: SessionService, private router: Router) {
+  constructor(private userService: UserService, private router: Router, private httpservice: HttpService) {
     this.loadUser();
   }
 
 
   async loadUser() {
-    this.user = await this.session.currentUser();
+    this.user = await this.userService.currentUser();
     Emitters.authEmitter.subscribe(
       (userdata: UserObject) => {
         this.user = userdata;
@@ -32,19 +32,13 @@ export class NevbarComponent {
   }
 
   logout(): void {
-    this.http.post(this.URL, {}, {
-      withCredentials: true
-    }).subscribe(
-      data => {
-        console.log('success', data);
-        this.userService.LogoutUser();
-        this.router.navigate(["/"]);
-      },
-      error => {
-        console.log('oops', error);
-      }
-    )
+    this.httpservice.logout(this.logoutCallback.bind(this))
+  }
 
+
+  logoutCallback() {
+    this.userService.LogoutUser();
+    this.router.navigate(["/"]);
   }
 
 }

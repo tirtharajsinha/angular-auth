@@ -4,6 +4,7 @@ import { UserObject } from './user-object';
 import { Emitters } from './myComponents/emitters/emitters';
 import { SessionService } from './session.service';
 import { CookieService } from 'ngx-cookie';
+import { HttpService } from './http.service';
 
 
 @Injectable({
@@ -16,7 +17,7 @@ export class UserService {
   user: UserObject;
   private URL: string = "http://localhost:8000/api/user";
   cookieValue: any;
-  constructor(private http: HttpClient, private session: SessionService, private cookieService: CookieService) {
+  constructor(private httpservice: HttpService, private session: SessionService, private cookieService: CookieService) {
     this.FetchUser();
   }
 
@@ -26,31 +27,32 @@ export class UserService {
 
     this.user = await this.session.currentUser();
     if (!this.user) {
-      await this.LoadUserFromServer();
-
+      this.LoadUserFromServer();
     }
   }
 
   async LoadUserFromServer() {
-    await this.http.get(this.URL, {
-      withCredentials: true
-    }).subscribe(
-      (data: any) => {
-        console.log('success', data);
-        this.user = data;
-        this.session.setUser(data);
-        Emitters.authEmitter.emit(data);
-      },
-      error => {
-        console.log('oops', "User is unauthenticated");
-      }
-    )
+    await this.httpservice.getUser(this.LoadUserFromServerCallback.bind(this));
   }
+
+  async LoadUserFromServerCallback(data) {
+    console.log('success', data);
+    this.user = data;
+    this.session.setUser(data);
+    Emitters.authEmitter.emit(data);
+  }
+
+
+
 
   LogoutUser() {
     this.user = undefined;
     this.session.logoutUser();
     Emitters.authEmitter.emit(undefined);
+  }
+
+  currentUser() {
+    return this.session.currentUser();
   }
 
 }

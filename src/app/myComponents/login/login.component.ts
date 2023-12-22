@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { UserService } from '../../user.service';
 import { UserObject } from '../../user-object';
 import { Emitters } from '../emitters/emitters';
+import { HttpService } from '../../http.service';
 
 @Component({
   selector: 'app-login',
@@ -19,7 +20,7 @@ export class LoginComponent {
 
 
 
-  constructor(private formBuilder: FormBuilder, private http: HttpClient, private router: Router, private userService: UserService) {
+  constructor(private formBuilder: FormBuilder, private httpservice: HttpService, private router: Router, private userService: UserService) {
     this.loadUser();
   }
 
@@ -40,25 +41,27 @@ export class LoginComponent {
   }
 
   submit(): void {
-    this.http.post(this.URL, this.form.getRawValue(), {
-      withCredentials: true
-    }).subscribe(
-      data => {
-        console.log('success', data);
-        this.api_response = "Sucessfully Logged In"
-        this.userService.FetchUser();
-        this.router.navigate(["/"]);
-      },
-      error => {
-        console.log('oops', error);
-        this.api_response = error.error.detail;
-      }
-    )
+    this.loginCallback = this.loginCallback.bind(this);
+    this.loginErrorCallback = this.loginErrorCallback.bind(this);
+    this.httpservice.login(this.form, this.loginCallback, this.loginErrorCallback)
   }
 
 
-  loadUser() {
-    this.user = this.userService.user;
+
+  loginCallback(data) {
+    console.log('success', data);
+    this.api_response = "Sucessfully Logged In"
+    this.userService.FetchUser();
+    this.router.navigate(["/"]);
+  }
+
+  loginErrorCallback(error) {
+    this.api_response = error.error.detail;
+  }
+
+
+  async loadUser() {
+    this.user = await this.userService.currentUser();
     Emitters.authEmitter.subscribe(
       (userdata: UserObject) => {
         this.user = userdata;

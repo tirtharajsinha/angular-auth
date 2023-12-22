@@ -22,6 +22,4 @@ export class SessionService {
   logoutUser() {
     sessionStorage.removeItem("user");
   }
-
-
 }

@@ -25,7 +25,7 @@ export class HomeComponent {
   }
 
   async loadUser() {
-    this.user = await this.session.currentUser();
+    this.user = await this.userService.currentUser();
     Emitters.authEmitter.subscribe(
       (userdata: UserObject) => {
         this.user = userdata;

@@ -1,4 +1,4 @@
-# AngularAuth
+# AngularAuth(JWT based)
 
 Frontend part of implementation of JWT Authentication and Authorization.
 
@@ -17,3 +17,11 @@ npm install
 ```
 ng serve
 ```
+
+## build application
+
+```
+ng build --output-path docs --base-href /angularauth
+```
+
+<img src="jwt-workflow.webp" alt="" />
